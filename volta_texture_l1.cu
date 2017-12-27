@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 // array size is 24576 * 4 / 1024 = 96 KB       
-#define ARR_SIZE 24576
+#define ARR_SIZE 4400
 
 // number of iterations 
 #define ITER 4096
@@ -16,7 +16,7 @@
 //declare the texture
 texture<int, 1, cudaReadModeElementType> tex_ref; 
 
-__global__ void texture_latency (int * my_array, int size, unsigned int *duration, int *index, int iter) {
+__global__ void texture_latency (int* my_array, int size, unsigned int *duration, int *index, int iter) {
   // data access latencies array
   __shared__ unsigned int s_tvalue[ITER];
   // accessed data indices array
@@ -158,4 +158,4 @@ int main() {
 
 	cudaDeviceReset(); // destroy context
 	return 0;
-
+}
