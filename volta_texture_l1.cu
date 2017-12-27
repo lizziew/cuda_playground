@@ -8,10 +8,10 @@
 #include <stdlib.h>
 
 // array size is 24576 * 4 / 1024 = 96 KB       
-#define ARR_SIZE 4400
+#define ARR_SIZE 6145
 
 // number of iterations 
-#define ITER 4096
+#define ITER 6144
 
 //declare the texture
 texture<int, 1, cudaReadModeElementType> tex_ref; 
@@ -145,6 +145,9 @@ void parametric_measure_texture(int N, int iterations, int stride) {
 
 int main() {
 	cudaSetDevice(0); // current device 
+
+  cudaDeviceGetCacheConfig();
+  cudaDeviceGetLimit();
 
   // repeatedly executed this amount of times
 	int iterations = 1;
