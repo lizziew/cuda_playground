@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 // array size is 24576 * 4 / 1024 = 96 KB       
-#define ARR_SIZE 6145
+#define ARR_SIZE 8192
 
 // number of iterations 
 #define ITER 6144
@@ -146,11 +146,15 @@ void parametric_measure_texture(int N, int iterations, int stride) {
 int main() {
 	cudaSetDevice(0); // current device 
 
-  cudaDeviceGetCacheConfig();
-  cudaDeviceGetLimit();
+    /*int count = 0;
+    cudaError_t error_id = cudaGetDeviceCount(&count);
+    if (error_id != cudaSuccess) {
+        printf("%d %s\n", error_id, cudaGetErrorString(error_id));
+    }
+    printf("count %d\n", count);*/
 
   // repeatedly executed this amount of times
-	int iterations = 1;
+	int iterations = 10;
   // array sequentially traversed with this amount
   int stride = 1;
 	
