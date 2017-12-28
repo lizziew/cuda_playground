@@ -8,9 +8,9 @@
 #include <stdlib.h>
 
 // number of elements of array (8192 * 4 / 1024 = 32 KB)     
-#define ARR_LEN 8192
+#define ARR_LEN 7168
 // number of elements of shared memory
-#define SHARED_LEN 6144
+#define SHARED_LEN 3584
 // number of warmups 
 #define WARMUP 10
 
@@ -29,27 +29,22 @@ __global__ void texture_latency (int* my_array, int size, unsigned int *duration
     s_tvalue[i] = 0; 
   }
   
-  // warm up array
   int j = 0;
-  for (int k = 0; k < WARMUP; k++) {
-    for (int i = 0; i < ARR_LEN; i++) {
-      j = tex1Dfetch(tex_ref, j);
-    }
-  }
-
   unsigned int start, end;
-  for (int i = 0; i < ARR_LEN; i++) { 
-    int shared_i = i % SHARED_LEN;
+  for (int k = 0; k <= WARMUP; k++) {
+      for (int i = 0; i < ARR_LEN; i++) { 
+        int shared_i = i % SHARED_LEN;
 
-    start = clock();
+        start = clock();
 
-    // traverse an array whose elements are initialized as the indices for the next memory access
-    j = tex1Dfetch(tex_ref, j);
-    // handles ILP with this data dependency 
-    s_value[shared_i] = j;
-    
-    end = clock();			
-    s_tvalue[shared_i] = end - start;
+        // traverse an array whose elements are initialized as the indices for the next memory access
+        j = tex1Dfetch(tex_ref, j);
+        // handles ILP with this data dependency 
+        s_value[shared_i] = j;
+        
+        end = clock();			
+        s_tvalue[shared_i] = end - start;
+      }
   }
 
   for (int i = 0; i < SHARED_LEN; i++) {
@@ -162,7 +157,7 @@ int main() {
   // array sequentially traversed with this amount
   int stride = 1;
 	
-	for (int N = ARR_SIZE; N <= ARR_SIZE; N += stride) {
+	for (int N = ARR_LEN; N <= ARR_LEN; N += stride) {
 		parametric_measure_texture(N, stride);
 	}
 
