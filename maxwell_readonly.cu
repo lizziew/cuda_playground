@@ -2,6 +2,8 @@
   Finds: size of the read only cache
   For Maxwell microarchitecture
   Source code based on paper https://arxiv.org/pdf/1509.02308.pdf
+  Compile with nvcc -arch=sm_35 maxwell_readonly.cu -o readonly
+  (__ldg() intrinsic is only available on compute capability 3.5+ architecture)
 */
 
 #include <stdio.h>
@@ -66,7 +68,7 @@ void parametric_measure_global(int N, int iterations, int stride) {
 
 	h_a = (unsigned int*) malloc(N*sizeof(unsigned int));
 
-  for (i = 0; i < N; i++) {		
+  for (int i = 0; i < N; i++) {		
 		h_a[i] = (i + stride) % N;	
 	}
 
@@ -125,10 +127,10 @@ void parametric_measure_global(int N, int iterations, int stride) {
     printf("Error 1 from copying from device is %s\n", cudaGetErrorString(error_id));
 	}
   
-  error_id = cudaMemcpy((void*) h_index, (void*) d_index, SHARED_LEN * sizeof(unsigned int), cudaMemcpyDeviceToHost);
+  /* error_id = cudaMemcpy((void*) h_index, (void*) d_index, SHARED_LEN * sizeof(unsigned int), cudaMemcpyDeviceToHost);
 	if (error_id != cudaSuccess) {
 		printf("Error 2 from copying from device to host is %s\n", cudaGetErrorString(error_id));
-	}
+	} */ 
 	cudaThreadSynchronize();
 	
 	for(int i = 0; i < SHARED_LEN; i += stride) {		
@@ -152,8 +154,7 @@ void parametric_measure_global(int N, int iterations, int stride) {
 void measure_global() {
 	int iterations = 64; 
 	int stride = 32;
-  //N_min =24, N_max=60
-	int N = 24 * 256;
+	int N = 8192; // 6144;
 
 	parametric_measure_global(N, iterations, stride);
 }
