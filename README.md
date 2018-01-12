@@ -24,4 +24,4 @@ L1 TLB cache size is 32 MB:
 
 ![alt text](L1_TLB.png "")
 
-![alt text](L2_TLB_Misses.png "")
+![alt text](L1_TLB_Misses.png "")
