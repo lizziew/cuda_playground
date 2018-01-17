@@ -5,8 +5,6 @@
 #include <stdio.h> 
 #include <stdint.h>
 
-#include "repeat.h"
-
 const int page_size = 4;  // Scale stride and arrays by page size.
 
 /* Test page size. Construct an access pattern of N elements spaced stride apart,
@@ -64,9 +62,9 @@ void measure_pagesize(int N, int stride, int offset) {
     /* launch kernel*/
     dim3 Db = dim3(1);
     dim3 Dg = dim3(1,1,1);
-i
+
     //printf("Launch kernel with parameters: %d, N: %d, stride: %d\n", iterations, N, stride); 
-    global_latency <<<Dg, Db>>>(d_a, N, iterations, 1, duration);
+    global_latency<<<Dg, Db>>>(d_a, N, iterations, 1, duration);
 
     cudaThreadSynchronize();
 
