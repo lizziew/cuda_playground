@@ -2,6 +2,8 @@
 
 ## GeForce GTX TITAN X
 
+See <a href="https://github.com/lizziew/cuda_playground/blob/master/TLB%20Results.pdf">this PDF</a> for most current results + discussion.
+
 ### L2 TLB Analysis
 
 Using maxwell_tlb.cu, generated 
