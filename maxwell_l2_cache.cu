@@ -65,7 +65,7 @@ void parametric_measure_global(int N, int iterations, int stride) {
   // launch kernel 
   dim3 Db = dim3(1);
   dim3 Dg = dim3(1,1,1);
-  global_latency <<<Dg, Db>>>(d_a, N, iterations,  duration, d_index);
+  global_latency <<<Dg, Db>>>(d_a, N, iterations, d_duration, d_index);
 
   cudaThreadSynchronize();
 
@@ -103,7 +103,7 @@ void measure_global() {
   
   for (int stride = 1; stride <= N/2; stride *= 2) {
     printf("\n=====%d GB array, cold cache miss, read 256 element====\n", N/1024/1024/1024);
-    printf("Stride = %d element, %d bytes\n", stride, stride * sizeof(unsigned int));
+    printf("Stride = %d element, %ld bytes\n", stride, stride * sizeof(unsigned int));
     parametric_measure_global(N, iterations, stride );
     printf("===============================================\n\n");
   }
