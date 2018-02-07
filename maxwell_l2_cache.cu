@@ -102,7 +102,7 @@ void measure_global() {
   int N = 1024 * 1024* 1024/sizeof(unsigned int); 
   
   for (int stride = 1; stride <= N/2; stride *= 2) {
-    printf("\n=====%d GB array, cold cache miss, read 256 element====\n", N/1024/1024/1024);
+    printf("\n=====%d GB array, cold cache miss, read 256 element====\n", sizeof(unsigned int)*N/1024/1024/1024);
     printf("Stride = %d element, %ld bytes\n", stride, stride * sizeof(unsigned int));
     parametric_measure_global(N, iterations, stride );
     printf("===============================================\n\n");
