@@ -58,7 +58,7 @@ void parametric_measure_global(int N, int iterations, int stride) {
   unsigned int *d_duration;
   cudaMalloc((void **) &d_duration, sizeof(unsigned int)*LEN);
   unsigned int *d_index;
-  cudaMalloc((void**) &d_index, sizeof(unsigned int)*LEN );
+  cudaMalloc((void**) &d_index, sizeof(unsigned int)*LEN);
 
   cudaThreadSynchronize();
   
@@ -99,14 +99,12 @@ void parametric_measure_global(int N, int iterations, int stride) {
 
 void measure_global() {
   int iterations = 1;
-  int N = 1024 * 1024* 1024/sizeof(unsigned int); 
+  int N = 1024 * 1024* 1024/sizeof(unsigned int); // 1 GB
   
-  for (int stride = 1; stride <= N/2; stride *= 2) {
-    printf("\n=====%d GB array, cold cache miss, read 256 element====\n", sizeof(unsigned int)*N/1024/1024/1024);
-    printf("Stride = %d element, %ld bytes\n", stride, stride * sizeof(unsigned int));
-    parametric_measure_global(N, iterations, stride );
-    printf("===============================================\n\n");
-  }
+  int stride = 1;
+  printf("\n=====%d GB array, read 256 elements====\n", sizeof(unsigned int)*N/1024/1024/1024);
+  printf("Stride = %d element, %d bytes\n", stride, stride * sizeof(unsigned int));
+  parametric_measure_global(N, iterations, stride );
 }
 
 int main(){
