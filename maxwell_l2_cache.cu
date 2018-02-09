@@ -99,10 +99,10 @@ void parametric_measure_global(int N, int iterations, int stride) {
 
 void measure_global() {
   int iterations = 1;
-  int N = 1024 * 1024* 1024/sizeof(unsigned int); // 1 GB
+  int N = 4 * 1024* 1024/sizeof(unsigned int); // 3MB
   
   int stride = 1;
-  printf("\n=====%d GB array, read 256 elements====\n", sizeof(unsigned int)*N/1024/1024/1024);
+  printf("\n=====%d MB array, read 256 elements====\n", sizeof(unsigned int)*N/1024/1024);
   printf("Stride = %d element, %d bytes\n", stride, stride * sizeof(unsigned int));
   parametric_measure_global(N, iterations, stride );
 }
