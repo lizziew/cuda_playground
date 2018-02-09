@@ -7,9 +7,9 @@
 #include <stdlib.h>
 
 // number of elements of array (4096 * 4 / 1024 = 16 KB)   
-#define ARR_LEN 4097
+#define ARR_LEN 6145
 // number of elements of shared memory
-#define SHARED_LEN 4096
+#define SHARED_LEN 6144
 // number of warmups 
 #define WARMUP 10
 
