@@ -81,8 +81,8 @@ void parametric_measure_global(int N, int iterations, int stride) {
 
   cudaThreadSynchronize();
 
-  for(int i = 0; i < LEN; i++)
-    printf("%d\t %d\n", h_index[i], h_duration[i]);
+  /*for(int i = 0; i < LEN; i++)
+    printf("%d\t %d\n", h_index[i], h_duration[i]);*/
 
   // free memory on GPu
   cudaFree(d_a);
@@ -99,12 +99,16 @@ void parametric_measure_global(int N, int iterations, int stride) {
 
 void measure_global() {
   int iterations = 1;
-  int N = 4 * 1024* 1024/sizeof(unsigned int); // 3MB
+  int N = 1024 * 1024* 1024/sizeof(unsigned int); // 3MB
   
-  int stride = 1;
+  int stride = 8;
   printf("\n=====%d MB array, read 256 elements====\n", sizeof(unsigned int)*N/1024/1024);
   printf("Stride = %d element, %d bytes\n", stride, stride * sizeof(unsigned int));
-  parametric_measure_global(N, iterations, stride );
+  unsigned int start_time, end_time;
+  start_time = clock();
+  parametric_measure_global(N, iterations, stride);
+  end_time = clock();
+  printf("Final time for 32 byte stride: %d\n", end_time - start_time);
 }
 
 int main(){
