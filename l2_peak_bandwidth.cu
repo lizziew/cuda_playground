@@ -1,6 +1,10 @@
 /* To run: 
 
 nvcc -Xptxas=dlcm=ca l2_peak_bandwidth.cu -o peak
+nvprof ./peak
+
+====
+
 nvprof --print-gpu-summary ./peak
 nvprof -m l2_read_throughput ./peak
 nvprof -m l2_write_throughput ./peak 
@@ -11,9 +15,12 @@ nvprof -m l2_write_throughput ./peak
 # include <stdint.h>
 # include "cuda_runtime.h"
 
-__global__ void global_latency (unsigned int* a, unsigned int* b, unsigned int* c, int N, int iterations) {
+__global__ 
+void global_latency (unsigned int* a, unsigned int* b, unsigned int* c, int N, int iterations) {
   for (int k = 0; k < iterations; k++) {
-    for (int j = 0; j < N; j++) {
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    int stride = blockDim.x * gridDim.x;
+    for (int j = index; j < N; j += stride) {
        c[j] = a[j] + b[j];
     }
   }
@@ -52,17 +59,12 @@ void parametric_measure_global(int N, int iterations) {
 
   cudaThreadSynchronize();
  
-  // timing code
-  cudaEvent_t start, stop;
-  cudaEventCreate(&start);
-  cudaEventCreate(&stop);
-
-  cudaEventRecord(start);
   // launch kernel with a large number of threads to saturate bandwidth 
-  dim3 Db = dim3(32,32,1);
-  dim3 Dg = dim3(512,1,1);
-  global_latency <<<Dg, Db>>>(da0, da1, da2, N, iterations);
-  cudaEventRecord(stop);
+  int blockSize = 512;
+  int numBlocks = (N + blockSize - 1) / blockSize;
+  //dim3 Db = dim3(32,32,1);
+  //dim3 Dg = dim3(512,1,1);
+  global_latency <<<numBlocks, blockSize>>>(da0, da1, da2, N, iterations);
   cudaThreadSynchronize();
 
   cudaError_t error_id = cudaGetLastError();
@@ -71,10 +73,6 @@ void parametric_measure_global(int N, int iterations) {
   }
 
   cudaThreadSynchronize();
-
-  float milliseconds = 0;
-  cudaEventElapsedTime(&milliseconds, start, stop);
-  printf("time in ms: %f\n", milliseconds);
 
   // free memory on GPu
   cudaFree(da0);
@@ -91,7 +89,7 @@ void parametric_measure_global(int N, int iterations) {
 
 void measure_global() {
   // access 3 1 MB arrays 1000s of times
-  int iterations = 1;
+  int iterations = 100;
   int N = 1024* 1024/sizeof(unsigned int); // 1 MB
   
   printf("\n=====3 %ld MB arrays * %d times====\n", sizeof(unsigned int)*N/1024/1024, iterations);
